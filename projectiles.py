@@ -21,10 +21,6 @@ class Projectile(object):
     def apply_physics(self, physics):
         self.position[0] += self.velocity[0]
         self.position[1] += self.velocity[1]
-        self.velocity[0] += physics.wind
-        self.velocity[1] += physics.gravity
-        self.velocity[0] *= physics.air_resistance
-        self.velocity[1] *= physics.air_resistance
 
     def get_int_position(self):
         return [int(x) for x in self.position]

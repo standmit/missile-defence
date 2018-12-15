@@ -31,11 +31,6 @@ from buildings import Buildings, generate_city
 
 
 class Physics(object):
-    """Physics related constants"""
-    air_resistance = 0.999
-    gravity        = 0.05
-    wind           = 0.0
-    
     def __init__(self, game):
         self.game = game
         self.location_map = collections.defaultdict(list)
@@ -195,8 +190,7 @@ class MissileDefenceGame(object):
     def generate_missile(self):
         pos = (uniform(0, self.resolution[0]), 0)
         vert_vel = uniform(2, 7)
-        D = math.pow(vert_vel, 2) - 4. * (self.physics.gravity / 2.) * (-1. * self.resolution[1])
-        t = (math.sqrt(D) - 2.) / self.physics.gravity
+        t = self.resolution[1] / vert_vel
         max_left_vel = -1. * pos[0] / t
         max_right_vel = (self.resolution[0] - pos[0]) / t
         
