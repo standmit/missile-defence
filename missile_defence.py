@@ -165,7 +165,7 @@ class MissileDefenceGame(object):
         self.fire_cycle = 0
         self.shield_dome = ShieldDome(self.resolution)
         self.shield_dome.health = 2
-        self.missile_threshold = 0.01
+        self.missile_threshold = 0.02
         self.projectiles = []
         self.initial_buildings_sum = self.get_buildings_sum()
         self.buildings_sum = self.initial_buildings_sum
@@ -335,7 +335,7 @@ class MissileDefenceGame(object):
                 self.score += 100
                            
             # randomly add more projectiles
-            self.missile_threshold += 0.0001
+            self.missile_threshold += 0.00001
             
             m = self.missile_threshold
             while m > 0:
