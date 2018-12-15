@@ -188,15 +188,18 @@ class MissileDefenceGame(object):
         self.buildings_surface.set_colorkey(0, pygame.RLEACCEL)
         
     def generate_missile(self):
-        pos = (uniform(0, self.resolution[0]), 0)
-        vert_vel = uniform(2, 7)
-        t = self.resolution[1] / vert_vel
-        max_left_vel = -1. * pos[0] / t
-        max_right_vel = (self.resolution[0] - pos[0]) / t
+        spawn_pos = (uniform(0, self.resolution[0]), 0)
+        ground_target = (uniform(0, self.resolution[0]), self.resolution[1])
+        max_vel = 2.
+        distance = (ground_target[0] - spawn_pos[0], ground_target[1] - spawn_pos[1])
+        k = abs(distance[1] / distance[0])
+        vert_vel = k * max_vel / (1. + k)
+        horz_vel = max_vel - vert_vel
+        if (distance[0] < 0.):
+            horz_vel *= -1.
         
-        p = projectiles.Missile(position=pos,
-                                velocity=(uniform(max_left_vel, max_right_vel), 
-                                          vert_vel))
+        p = projectiles.Missile(position=spawn_pos,
+                                velocity=(horz_vel, vert_vel))
         
         count = 0
         while p.position[1] < -20 and count < 100:
