@@ -18,10 +18,11 @@ class CannonMissile(projectiles.Missile):
         self.size_increase_remaining = 30
         
         self.draw_radius    = 2
+        self.trail_length   = 10
+        self.trail_radius   = 4
         self.blast_colour_a = (150, 180, 255)
         self.blast_colour_b = (255, 0, 0)
         self.radius         = 0
-        self.colour_front   = (100, 120, 200)
         self.invulnerable_ticks = 6
         self.cannon_fire    = 1
                 
