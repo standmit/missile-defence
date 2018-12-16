@@ -17,7 +17,7 @@ class CannonMissile(projectiles.Missile):
         projectiles.Missile.__init__(self, centre, velocity)
         self.size_increase_remaining = 30
         
-        self.draw_radius    = 0
+        self.draw_radius    = 2
         self.blast_radius   = 20
         self.blast_ticks    = 12
         self.blast_colour_a = (150, 180, 255)
@@ -89,5 +89,5 @@ class DefenceCannon(object):
             self.target = target
             self.update_direction()
             self.ticks_since_firing = 0
-            missile_velocity = array(self.direction) * 20
+            missile_velocity = array(self.direction) * 2
             self.create_missile(missile_velocity)
