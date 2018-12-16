@@ -190,7 +190,7 @@ class MissileDefenceGame(object):
     def generate_missile(self):
         spawn_pos = (uniform(0, self.resolution[0]), 0)
         ground_target = (uniform(0, self.resolution[0]), self.resolution[1])
-        max_vel = 2.
+        max_vel = 1.
         distance = (ground_target[0] - spawn_pos[0], ground_target[1] - spawn_pos[1])
         k = abs(distance[1] / distance[0])
         vert_vel = k * max_vel / (1. + k)

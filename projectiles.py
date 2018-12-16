@@ -28,14 +28,13 @@ class Projectile(object):
 
 class Missile(Projectile):
     def __init__(self, position, velocity):
-        self.draw_radius      = int(uniform(2, 7))    
+        self.draw_radius      = 4    
         Projectile.__init__(self, position, velocity, self.draw_radius)
         self.trail            = []        
-        self.trail_length     = 10
+        self.trail_length     = 20
         self.start_pos        = position
         self.exploding        = False
         self.blast_ticks_done = 0
-        self.draw_radius      = 3
         self.blast_radius     = 20
         self.blast_ticks      = 50
         self.colour_front     = (250, 250, 250)
@@ -43,7 +42,6 @@ class Missile(Projectile):
         self.blast_colour_a   = (255, 255, 0)
         self.blast_colour_b   = (255, 0, 0)        
         self.invulnerable_ticks = 0
-        self.size_increase_remaining = 0
         self.cannon_fire      = False
         
     def is_garbage(self, resolution):
@@ -65,11 +63,6 @@ class Missile(Projectile):
             return False
         
     def apply_physics(self, physics, buildings):
-        if self.size_increase_remaining > 0:
-            self.size_increase_remaining -= 1
-            self.draw_radius += 0.5
-            self.radius += 0.5
-        
         if self.exploding:
             self.blast_ticks_done += 1
             self.apply_explosion(buildings)
@@ -101,13 +94,47 @@ class Missile(Projectile):
         self.blast_ticks_done += 1
         self.radius = int(self.get_current_explosion_radius()) - 1
         buildings.destroy_circle(self.position, self.radius)
+    
+    def draw_marker(self, screen):
+        if self.cannon_fire == 0:
+            lines_inner_rad = 5
+            lines_outer_rad = 3
+        else:
+            lines_inner_rad = 4
+            lines_outer_rad = 2
+        
+        pygame.draw.line(
+            screen,
+            (255, 255, 255),
+            (int(self.position[0]) - lines_outer_rad, int(self.position[1]) - lines_outer_rad),
+            (int(self.position[0]) - lines_inner_rad, int(self.position[1]) - lines_inner_rad)
+        )
+        pygame.draw.line(
+            screen,
+            (255, 255, 255),
+            (int(self.position[0]) + lines_outer_rad, int(self.position[1]) - lines_outer_rad),
+            (int(self.position[0]) + lines_inner_rad, int(self.position[1]) - lines_inner_rad)
+        )
+        pygame.draw.line(
+            screen,
+            (255, 255, 255),
+            (int(self.position[0]) + lines_outer_rad, int(self.position[1]) + lines_outer_rad),
+            (int(self.position[0]) + lines_inner_rad, int(self.position[1]) + lines_inner_rad)
+        )
+        pygame.draw.line(
+            screen,
+            (255, 255, 255),
+            (int(self.position[0]) - lines_outer_rad, int(self.position[1]) + lines_outer_rad),
+            (int(self.position[0]) - lines_inner_rad, int(self.position[1]) + lines_inner_rad)
+        )
        
     def draw(self, screen):
         pygame.draw.line(screen, (140, 140, 140), self.start_pos, self.position)
             
         prev_pos = None
         i        = 0
-        for pos in self.trail:
+        for t_i in range(0, len(self.trail) - self.draw_radius + 1):
+            pos = self.trail[t_i]
             i += 1
             int_pos = [int(x) for x in pos]                
             if prev_pos is not None:
@@ -117,6 +144,10 @@ class Missile(Projectile):
                                  int_pos, prev_pos,
                                  int((i * self.draw_radius) / len(self.trail)))
             prev_pos = int_pos
+        
+        pygame.draw.circle(screen, self.colour_front, self.get_int_position(), int(2))
+        
+        self.draw_marker(screen)
         
         if self.exploding:
             pygame.draw.circle(screen,
