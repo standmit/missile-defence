@@ -34,9 +34,9 @@ class Missile(Projectile):
         self.trail_length     = 10
         self.exploding        = False
         self.blast_ticks_done = 0
-        self.draw_radius      = int(uniform(2, 7))
-        self.blast_radius     = self.draw_radius * 5
-        self.blast_ticks      = (self.blast_radius * 4) / 3
+        self.draw_radius      = 3
+        self.blast_radius     = 20
+        self.blast_ticks      = 50
         self.colour_front     = (250, 250, 250)
         self.colour_tail      = (20, 20, 100)
         self.blast_colour_a   = (255, 255, 0)
