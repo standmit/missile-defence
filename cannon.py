@@ -90,13 +90,4 @@ class DefenceCannon(object):
             self.update_direction()
             self.ticks_since_firing = 0
             missile_velocity = array(self.direction) * 20
-            for theta in [-0.08, 0, 0.08]:
-                cos_theta = math.cos(theta)
-                sin_theta = math.sin(theta)
-                self.create_missile((missile_velocity[0] * cos_theta -
-                                     missile_velocity[1] * sin_theta,
-                                     missile_velocity[0] * sin_theta +
-                                     missile_velocity[1] * cos_theta))
-                                    
-            
-        
+            self.create_missile(missile_velocity)
