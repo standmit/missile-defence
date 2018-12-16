@@ -32,13 +32,14 @@ class Missile(Projectile):
         Projectile.__init__(self, position, velocity, self.draw_radius)
         self.trail            = []        
         self.trail_length     = 10
+        self.start_pos        = position
         self.exploding        = False
         self.blast_ticks_done = 0
         self.draw_radius      = 3
         self.blast_radius     = 20
         self.blast_ticks      = 50
         self.colour_front     = (250, 250, 250)
-        self.colour_tail      = (20, 20, 100)
+        self.colour_tail      = (200, 20, 100)
         self.blast_colour_a   = (255, 255, 0)
         self.blast_colour_b   = (255, 0, 0)        
         self.invulnerable_ticks = 0
@@ -101,7 +102,9 @@ class Missile(Projectile):
         self.radius = int(self.get_current_explosion_radius()) - 1
         buildings.destroy_circle(self.position, self.radius)
        
-    def draw(self, screen):       
+    def draw(self, screen):
+        pygame.draw.line(screen, (140, 140, 140), self.start_pos, self.position)
+            
         prev_pos = None
         i        = 0
         for pos in self.trail:
