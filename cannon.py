@@ -12,8 +12,8 @@ from maths import normalize
 import math
 import projectiles
 
-class CannonMissile(projectiles.Missile):
-    def __init__(self, centre, velocity):
+class CounterMissile(projectiles.Missile):
+    def __init__(self, centre, velocity, target):
         projectiles.Missile.__init__(self, centre, velocity)
         self.size_increase_remaining = 30
         
@@ -25,7 +25,23 @@ class CannonMissile(projectiles.Missile):
         self.radius         = 0
         self.invulnerable_ticks = 6
         self.cannon_fire    = 1
-                
+        self.target         = target
+    
+    def draw_marker(self, screen):
+        rad = 2
+        pygame.draw.line(
+            screen,
+            (255, 255, 255),
+            (int(self.target[0]) - rad, int(self.target[1]) - rad),
+            (int(self.target[0]) + rad, int(self.target[1]) + rad)
+        )
+        pygame.draw.line(
+            screen,
+            (255, 255, 255),
+            (int(self.target[0]) + rad, int(self.target[1]) - rad),
+            (int(self.target[0]) - rad, int(self.target[1]) + rad)
+        )
+                    
 class DefenceCannon(object):
     def __init__(self, centre, game):
         self.target = array([100, -100])
@@ -77,9 +93,9 @@ class DefenceCannon(object):
     def can_fire(self):
         return self.ticks_since_firing > 8 and not self.destroyed
 
-    def create_missile(self, missile_velocity):
-        new_missile = CannonMissile(self.centre,
-                                          missile_velocity)
+    def create_missile(self, missile_velocity, target):
+        new_missile = CounterMissile(self.centre,
+                                          missile_velocity, target)
                                                 
         self.game.projectiles.append(new_missile)
                            
@@ -89,4 +105,4 @@ class DefenceCannon(object):
             self.update_direction()
             self.ticks_since_firing = 0
             missile_velocity = array(self.direction) * 2
-            self.create_missile(missile_velocity)
+            self.create_missile(missile_velocity, target)

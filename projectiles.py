@@ -97,32 +97,32 @@ class Missile(Projectile):
         buildings.destroy_circle(self.position, self.radius)
     
     def draw_marker(self, screen):
-        lines_inner_rad = 6
-        lines_outer_rad = 4
+        inner_rad = 4
+        outer_rad = 6
         
         pygame.draw.line(
             screen,
             (255, 255, 255),
-            (int(self.position[0]) - lines_outer_rad, int(self.position[1]) - lines_outer_rad),
-            (int(self.position[0]) - lines_inner_rad, int(self.position[1]) - lines_inner_rad)
+            (int(self.position[0]) - outer_rad, int(self.position[1]) - outer_rad),
+            (int(self.position[0]) - inner_rad, int(self.position[1]) - inner_rad)
         )
         pygame.draw.line(
             screen,
             (255, 255, 255),
-            (int(self.position[0]) + lines_outer_rad, int(self.position[1]) - lines_outer_rad),
-            (int(self.position[0]) + lines_inner_rad, int(self.position[1]) - lines_inner_rad)
+            (int(self.position[0]) + outer_rad, int(self.position[1]) - outer_rad),
+            (int(self.position[0]) + inner_rad, int(self.position[1]) - inner_rad)
         )
         pygame.draw.line(
             screen,
             (255, 255, 255),
-            (int(self.position[0]) + lines_outer_rad, int(self.position[1]) + lines_outer_rad),
-            (int(self.position[0]) + lines_inner_rad, int(self.position[1]) + lines_inner_rad)
+            (int(self.position[0]) + outer_rad, int(self.position[1]) + outer_rad),
+            (int(self.position[0]) + inner_rad, int(self.position[1]) + inner_rad)
         )
         pygame.draw.line(
             screen,
             (255, 255, 255),
-            (int(self.position[0]) - lines_outer_rad, int(self.position[1]) + lines_outer_rad),
-            (int(self.position[0]) - lines_inner_rad, int(self.position[1]) + lines_inner_rad)
+            (int(self.position[0]) - outer_rad, int(self.position[1]) + outer_rad),
+            (int(self.position[0]) - inner_rad, int(self.position[1]) + inner_rad)
         )
        
     def draw(self, screen):
@@ -144,7 +144,7 @@ class Missile(Projectile):
         
         pygame.draw.circle(screen, self.colour_front, self.get_int_position(), int(2))
         
-        if self.cannon_fire == 0:
+        if not self.exploding:
             self.draw_marker(screen)
         
         if self.exploding:

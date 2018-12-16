@@ -59,7 +59,7 @@ class Physics(object):
            yield array(p.position) + array(p.velocity) * (x / float(count))
            
     def check_collision(self, p):
-        for pos in self.position_iterator(p):
+        for pos in self.position_iterator(p):            
             if (not p.cannon_fire and
                 self.game.shield_dome.collision_check(p.position)):
                 
@@ -72,22 +72,40 @@ class Physics(object):
                 p.position = pos # don't hit inside
                 return        
             
-            for q in self._get_adjacent_projectiles(pos):
-                if p is not q and (not p.cannon_fire or not q.cannon_fire):
-                    radius_sum = q.radius + p.radius
-                    radius_sum_sq = radius_sum * radius_sum            
-                    diff_vec = array(pos) - array(q.position)
-                    distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
-                    if distance_squared <= radius_sum_sq:
-                        if not p.exploding and not p.cannon_fire:
-                            self.game.score += 200                            
-                        p.exploding = True
+            if p.cannon_fire:
+                diff_vec = array(pos) - array(p.target)
+                distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
+                if distance_squared <= 1.:
+                    p.exploding = True
+                    return
+            
+            if not p.exploding:
+                for q in self._get_adjacent_projectiles(pos):
+                    if q.exploding:
+                        radius_sum_sq = pow(p.radius + q.radius, 2)
+                        diff_vec = array(pos) - array(q.position)
+                        distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
+                        if distance_squared <= radius_sum_sq:
+                            self.game.score += 200
+                            p.exploding = True
+                            return
+            
+#            for q in self._get_adjacent_projectiles(pos):
+#                if p is not q and (not p.cannon_fire or not q.cannon_fire):
+#                    radius_sum = q.radius + p.radius
+#                    radius_sum_sq = radius_sum * radius_sum            
+#                    diff_vec = array(pos) - array(q.position)
+#                    distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
+#                    if distance_squared <= radius_sum_sq:
+#                        if not p.exploding and not p.cannon_fire:
+#                            self.game.score += 200                            
+#                        p.exploding = True
                         
-                        if not q.exploding and not q.cannon_fire:
-                            self.game.score += 200                        
-                        q.exploding = True
+#                        if not q.exploding and not q.cannon_fire:
+#                            self.game.score += 200                        
+#                        q.exploding = True
                         
-                        return
+#                        return
 
 class ShieldDome(object):
     def __init__(self, resolution):
@@ -328,8 +346,6 @@ class MissileDefenceGame(object):
                 self.buildings_sum   = self.get_buildings_sum()
                 if float(self.buildings_sum) / self.initial_buildings_sum < 0.2:
                     self.reset()
-             
-                self.score += 100
                            
             # randomly add more projectiles
             #self.missile_threshold += 0.000001
