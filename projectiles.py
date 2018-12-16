@@ -36,7 +36,7 @@ class Missile(Projectile):
         self.exploding        = False
         self.blast_ticks_done = 0
         self.blast_radius     = 20
-        self.blast_ticks      = 50
+        self.blast_ticks      = 80
         self.colour_front     = (250, 250, 250)
         self.colour_tail      = (200, 20, 100)
         self.blast_colour_a   = (255, 255, 0)
@@ -87,7 +87,7 @@ class Missile(Projectile):
         if proportion > 1.0:
             proportion = 1.0  # don't explode too big on the final tick
         
-        radius = self.blast_radius * proportion
+        radius = self.draw_radius + (self.blast_radius - self.draw_radius) * proportion
         return radius
         
     def apply_explosion(self, buildings):        
