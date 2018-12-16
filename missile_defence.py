@@ -86,7 +86,7 @@ class Physics(object):
                         diff_vec = array(pos) - array(q.position)
                         distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
                         if distance_squared <= radius_sum_sq:
-                            self.game.score += 200
+                            self.game.score += 1
                             p.exploding = True
                             return
             
