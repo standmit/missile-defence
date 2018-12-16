@@ -21,6 +21,8 @@ from maths import size_squared, normalize
 import random
 from random import uniform
 
+from sys import platform
+
 
 # imports from my files
 import background
@@ -185,8 +187,16 @@ class MissileDefenceGame(object):
         self.score = 0
         
     def __init__(self):
+        if platform == "win32":
+            from ctypes import windll
+            screen_width = windll.user32.GetSystemMetrics(0)
+            screen_height = windll.user32.GetSystemMetrics(1)
+            filling = 0.7
+            self.resolution = (int(screen_width * filling), int(screen_height * filling))
+        else:
+            self.resolution = (640, 480)
+        
         self.buildings_colour = (0,0,10)   # blue-black
-        self.resolution = (640, 480)
         self.auto_mode = False
                 
         pygame.init()
