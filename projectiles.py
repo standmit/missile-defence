@@ -11,6 +11,7 @@ from background import grad
 import random
 from random import uniform
 import numpy
+from math import sqrt
 
 class Projectile(object):
     def __init__(self, position, velocity, radius):
@@ -27,9 +28,16 @@ class Projectile(object):
 
 
 class Missile(Projectile):
-    def __init__(self, position, velocity):
-        self.draw_radius      = 4    
-        Projectile.__init__(self, position, velocity, self.draw_radius)
+    def __init__(self, position, target, velocity):
+        self.draw_radius      = 4
+        self.target           = target
+        
+        distance = (self.target[0] - position[0], self.target[1] - position[1])
+        distance_total = sqrt(pow(distance[0], 2) + pow(distance[1], 2))
+        horz_vel = distance[0] / distance_total * velocity
+        vert_vel = distance[1] / distance_total * velocity
+        
+        super(Missile, self).__init__(position, (horz_vel, vert_vel), self.draw_radius)
         self.trail            = []        
         self.trail_length     = 20
         self.trail_radius     = self.draw_radius
@@ -37,7 +45,7 @@ class Missile(Projectile):
         self.exploding        = False
         self.blast_ticks_done = 0
         self.blast_radius     = 20
-        self.blast_ticks      = 80
+        self.blast_ticks      = 100
         self.colour_front     = (250, 250, 250)
         self.colour_tail      = (200, 20, 100)
         self.blast_colour_a   = (255, 255, 0)

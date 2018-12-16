@@ -28,7 +28,7 @@ from sys import platform
 import background
 import projectiles
 from background import grad
-from cannon import DefenceCannon
+from cannon import MissileLauncher
 from buildings import Buildings, generate_city
 
 
@@ -72,14 +72,7 @@ class Physics(object):
             if self.game.buildings.get(pos[0], pos[1]) == 1:
                 p.exploding = True
                 p.position = pos # don't hit inside
-                return        
-            
-            if p.cannon_fire:
-                diff_vec = array(pos) - array(p.target)
-                distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
-                if distance_squared <= 1.:
-                    p.exploding = True
-                    return
+                return
             
             if not p.exploding:
                 for q in self._get_adjacent_projectiles(pos):
@@ -92,22 +85,11 @@ class Physics(object):
                             p.exploding = True
                             return
             
-#            for q in self._get_adjacent_projectiles(pos):
-#                if p is not q and (not p.cannon_fire or not q.cannon_fire):
-#                    radius_sum = q.radius + p.radius
-#                    radius_sum_sq = radius_sum * radius_sum            
-#                    diff_vec = array(pos) - array(q.position)
-#                    distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
-#                    if distance_squared <= radius_sum_sq:
-#                        if not p.exploding and not p.cannon_fire:
-#                            self.game.score += 200                            
-#                        p.exploding = True
-                        
-#                        if not q.exploding and not q.cannon_fire:
-#                            self.game.score += 200                        
-#                        q.exploding = True
-                        
-#                        return
+            diff_vec = array(pos) - array(p.target)
+            distance_squared = numpy.ma.innerproduct(diff_vec, diff_vec)
+            if distance_squared <= 1.:
+                p.exploding = True
+                return
 
 class ShieldDome(object):
     def __init__(self, resolution):
@@ -171,8 +153,8 @@ class MissileDefenceGame(object):
     def reset(self):
         self.background = background.StarryBackground(self.resolution)                       
         self.physics = Physics(self)        
-        self.cannon = DefenceCannon(centre=(self.resolution[0] / 2,
-                                            self.resolution[1] - 99),
+        self.cannon = MissileLauncher(centre=(self.resolution[0] / 2,
+                                              self.resolution[1] - 99),
                                     game=self)
         self.buildings = Buildings(generate_city(self.resolution),
                                    self.resolution)
@@ -218,16 +200,10 @@ class MissileDefenceGame(object):
     def generate_missile(self):
         spawn_pos = (uniform(0, self.resolution[0]), 0)
         ground_target = (uniform(0, self.resolution[0]), self.resolution[1])
-        max_vel = 1.
-        distance = (ground_target[0] - spawn_pos[0], ground_target[1] - spawn_pos[1])
-        k = abs(distance[1] / distance[0])
-        vert_vel = k * max_vel / (1. + k)
-        horz_vel = max_vel - vert_vel
-        if (distance[0] < 0.):
-            horz_vel *= -1.
         
         p = projectiles.Missile(position=spawn_pos,
-                                velocity=(horz_vel, vert_vel))
+                                target=ground_target,
+                                velocity=1.)
         
         count = 0
         while p.position[1] < -20 and count < 100:
