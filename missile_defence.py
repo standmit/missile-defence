@@ -173,10 +173,18 @@ class MissileDefenceGame(object):
             from ctypes import windll
             screen_width = windll.user32.GetSystemMetrics(0)
             screen_height = windll.user32.GetSystemMetrics(1)
-            filling = 0.7
+            filling = 0.8
+            self.resolution = (int(screen_width * filling), int(screen_height * filling))
+        elif platform == "linux2":
+            import gtk
+            screen = gtk.Window().get_screen()
+            monitor = screen.get_monitor_geometry(screen.get_monitor_at_window(screen.get_active_window()))
+            screen_width = monitor[2]
+            screen_height = monitor[3]
+            filling = 0.8
             self.resolution = (int(screen_width * filling), int(screen_height * filling))
         else:
-            self.resolution = (640, 480)
+            self.resolution = (1024, 768)
         
         self.buildings_colour = (0,0,10)   # blue-black
         self.auto_mode = False
