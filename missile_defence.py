@@ -48,7 +48,7 @@ class Physics(object):
                         yield p
         
     def _get_cell_for(self, position):
-        return tuple(int(x) / 50 for x in position)
+        return tuple(int(x / 50) for x in position)
         
     def update_location_cache(self):
         self.location_map.clear()
@@ -61,9 +61,9 @@ class Physics(object):
            yield array(p.position) + array(p.velocity) * (x / float(count))
            
     def check_collision(self, p):
-        for pos in self.position_iterator(p):            
+        for pos in self.position_iterator(p):
             if (not p.cannon_fire and
-                self.game.shield_dome.collision_check(p.position)):
+                self.game.shield_dome.collision_check(p.position[0], p.position[1])):
                 
                 p.exploding = True
                 p.position = pos # don't hit inside
@@ -129,7 +129,7 @@ class ShieldDome(object):
             if self.bright > 0:
                 self.bright -= 1
         
-    def collision_check(self, (x,y)):
+    def collision_check(self, x, y):
         if not self.is_online():
             return False
         else:
@@ -349,6 +349,7 @@ class MissileDefenceGame(object):
                 m -= random.random() 
                 if m > 0:
                     self.projectiles.append(self.generate_missile())
+                    self.first_rocket = False
             
             self.apply_physics()
             

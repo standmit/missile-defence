@@ -49,7 +49,7 @@ def generate_city(resolution):
 def add_building(pixeldata, x_mid, width, height):
     # todo: add windows
     resolution = numpy.ma.shape(pixeldata)
-    for x in range(x_mid - (width/2), x_mid + (width/2)):
+    for x in range(int(x_mid - (width/2)), int(x_mid + (width/2))):
         for y in range(resolution[1] - height, resolution[1]):
             try:
                 pixeldata[x][y] = 1
